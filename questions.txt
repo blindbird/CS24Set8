@@ -1,0 +1,69 @@
+Answers to HW8 Questions
+========================
+
+a)  How to detect when a page is accessed?
+
+The initial protection of a page should be PROT_NONE. If a segfault is gotten 
+with this particular protection, then the page should be given read access, 
+as the page is being accessed for the first time.
+
+As the process is already in the virtual address space, then when the CPU calls 
+the address to put into physical main memory ("mmap()"), the permission should 
+be set to PROT_NONE. This will throw a segfault when anything tries to access 
+it. This will be the first sign that the page of memory has been accessed. After
+this first access, the permission can be changed to whatever is really needed
+of that memory through "mprotect()". Then it can be learnt whether something has
+tried to access the memory at least once by checking if the permission is not
+PROT_NONE.
+
+
+b)  How to detect when a page becomes dirty?
+
+If another segfault is gotten from the page, then the page is trying to be 
+written to. This will be the first time that it is being written to, so you can
+then set the bits as dirty.
+
+A similar mechanism can be used to detect this situation. Depending on what the
+memory allows, set the permissions using mprotect() only to whatever is needed
+at the time. Only when a program want to write to memory should the permission 
+be set to PROT_WRITE if the action is deemed possible by the constraints on the
+memory. Then the pages can be checked for whether the permission is PROT_WRITE 
+to know whether the page has been dirtied.
+
+
+f)  Page-load rate of "test_matrix -m 1024 1000" using RANDOM policy:
+
+
+g)  Page Replacement Policy #1 (fill in the information below)
+
+Name of policy you chose to implement:  
+
+Below, give the command-line for invoking the matrix-test program for a
+1000x1000 matrix, with a maximum of 1024 resident pages.  (If multiple
+steps are required, list them all here.)
+
+  >>>
+
+Give the resulting page-load rate of the above command:  
+
+If you have any additional information to share about your policy, please
+share it here.  Please keep your comments brief; you don't need to repeat
+what the assignment says about the policy here.
+
+
+h)  Page Replacement Policy #2 (if you implemented two policies)
+
+Name of policy you chose to implement:  
+
+Below, give the command-line for invoking the matrix-test program for a
+1000x1000 matrix, with a maximum of 1024 resident pages.  (If multiple
+steps are required, list them all here.)
+
+  >>>
+
+Give the resulting page-load rate of the above command:  
+
+If you have any additional information to share about your policy, please
+share it here.  Please keep your comments brief; you don't need to repeat
+what the assignment says about the policy here.
+
