@@ -91,23 +91,27 @@ void policy_timer_tick(void) {
  */
 page_t choose_and_evict_victim_page(void) {
 
-
-need to change
-
-
-
-    int i_victim;
     page_t victim;
 
-    /* Figure out which page to evict. */
-    i_victim = rand() % loaded->num_loaded;
-    victim = loaded->pages[i_victim];
+    /* Figure out which page to evict by going through the array in a circular
+    fashion. If the page has been accessed, reset to 0 and if not it is the next
+    victim */
+    while (1) {
+        victim = loaded->pages[loaded->clock_hand % loaded->num_loaded];
+        if (is_page_accessed(victim)) {
+            clear_page_accessed(victim);
+            loaded->clock_hand++;
+        } else {
+            loaded->clock_hand = loaded->clock_hand % loaded->num_loaded;
+            break;
+        }
+    }
 
     /* Shrink the collection of loaded pages now, by moving the last page in the
      * collection into the spot that the victim just occupied.
      */
     loaded->num_loaded--;
-    loaded->pages[i_victim] = loaded->pages[loaded->num_loaded];
+    loaded->pages[loaded->clock_hand] = loaded->pages[loaded->num_loaded];
 
 #if VERBOSE
     fprintf(stderr, "Choosing victim page %u to evict.\n", victim);
